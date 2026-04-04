@@ -32,3 +32,4 @@ go.work.sum
 # .vscode/
 ReportBoxEGTSTelemetryService
 Settings.json
+message.log

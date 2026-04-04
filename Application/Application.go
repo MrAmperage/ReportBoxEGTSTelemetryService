@@ -67,6 +67,7 @@ func (Service *Service) HandlerConnection(Connection net.Conn) {
 		Package := &EGTSPackge.EGTSPackge{}
 		Package.Decode(Data)
 		File.Write([]byte(fmt.Sprintf("% x\n", Data)))
+		File.Write([]byte(fmt.Sprintf("Версия пакета %d\n", Package.Header.Version)))
 		Connection.Write([]byte("OK\n"))
 	}
 }
