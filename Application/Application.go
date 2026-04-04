@@ -68,6 +68,7 @@ func (Service *Service) HandlerConnection(Connection net.Conn) {
 		Package.Decode(Data)
 		File.Write([]byte(fmt.Sprintf("% x\n", Data)))
 		File.Write([]byte(fmt.Sprintf("Версия протокола %d\n", Package.Header.ProtocolVersion)))
+		File.Write([]byte(fmt.Sprintf("Security Key Id %d\n", Package.Header.SecurityKeyId)))
 		Connection.Write([]byte("OK\n"))
 	}
 }

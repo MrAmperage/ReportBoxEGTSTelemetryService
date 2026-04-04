@@ -11,11 +11,13 @@ type EGTSPackgeHeader struct {
 	BasePackage BasePackage.BasePackage
 	/*Версия протокола*/
 	ProtocolVersion int
+	SecurityKeyId   int
 }
 
 /*Декодер заголовка*/
 func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Reader *bytes.Reader) {
 	EGTSPackgeHeader.DecodeProtocolVersion(Reader)
+	EGTSPackgeHeader.DecodeSecurityKeyId(Reader)
 
 }
 
@@ -26,6 +28,17 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeProtocolVersion(Reader *bytes.Re
 		return Error
 	}
 	EGTSPackgeHeader.ProtocolVersion = int(ByteVersion[0])
+	return Error
+
+}
+
+/*Декодер Security Key Id*/
+func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeSecurityKeyId(Reader *bytes.Reader) (Error error) {
+	ByteVersion, Error := EGTSPackgeHeader.BasePackage.ReadNext(Reader, 1)
+	if Error != nil {
+		return Error
+	}
+	EGTSPackgeHeader.SecurityKeyId = int(ByteVersion[0])
 	return Error
 
 }
