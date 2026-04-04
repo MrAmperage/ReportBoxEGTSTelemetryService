@@ -23,22 +23,22 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Reader *bytes.Reader) {
 
 /*Декодер версии протокола*/
 func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeProtocolVersion(Reader *bytes.Reader) (Error error) {
-	ByteVersion, Error := EGTSPackgeHeader.BasePackage.ReadNext(Reader, 1)
+	BytesVersion, Error := EGTSPackgeHeader.BasePackage.ReadNext(Reader, 1)
 	if Error != nil {
 		return Error
 	}
-	EGTSPackgeHeader.ProtocolVersion = int(ByteVersion[0])
+	EGTSPackgeHeader.ProtocolVersion = int(BytesVersion[0])
 	return Error
 
 }
 
 /*Декодер Security Key Id*/
 func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeSecurityKeyId(Reader *bytes.Reader) (Error error) {
-	ByteVersion, Error := EGTSPackgeHeader.BasePackage.ReadNext(Reader, 1)
+	BytesSecurityKeyId, Error := EGTSPackgeHeader.BasePackage.ReadNext(Reader, 1)
 	if Error != nil {
 		return Error
 	}
-	EGTSPackgeHeader.SecurityKeyId = int(ByteVersion[0])
+	EGTSPackgeHeader.SecurityKeyId = int(BytesSecurityKeyId[0])
 	return Error
 
 }
