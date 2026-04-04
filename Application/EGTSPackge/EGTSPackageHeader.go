@@ -3,6 +3,7 @@ package EGTSPackge
 import (
 	"ReportBoxEGTSTelemetryService/Application/BasePackage"
 	"bytes"
+	"io"
 )
 
 /*Структура для заголовка пакета*/
@@ -11,7 +12,10 @@ type EGTSPackgeHeader struct {
 	BasePackage BasePackage.BasePackage
 	/*Версия протокола*/
 	ProtocolVersion int
-	SecurityKeyId   int
+	/*Security Key*/
+	SecurityKeyId int
+	/*Флаги*/
+	EGTSPackgeHeaderFlags EGTSPackgeHeaderFlags
 }
 
 /*Декодер заголовка*/
@@ -23,6 +27,7 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Reader *bytes.Reader) {
 
 /*Декодер версии протокола*/
 func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeProtocolVersion(Reader *bytes.Reader) (Error error) {
+	Reader.Seek(0, io.SeekStart)
 	BytesVersion, Error := EGTSPackgeHeader.BasePackage.ReadNext(Reader, 1)
 	if Error != nil {
 		return Error
@@ -34,6 +39,7 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeProtocolVersion(Reader *bytes.Re
 
 /*Декодер Security Key Id*/
 func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeSecurityKeyId(Reader *bytes.Reader) (Error error) {
+	Reader.Seek(1, io.SeekStart)
 	BytesSecurityKeyId, Error := EGTSPackgeHeader.BasePackage.ReadNext(Reader, 1)
 	if Error != nil {
 		return Error
