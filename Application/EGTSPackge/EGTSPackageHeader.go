@@ -15,12 +15,12 @@ type EGTSPackgeHeader struct {
 
 /*Декодер заголовка*/
 func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Reader *bytes.Reader) {
-	EGTSPackgeHeader.DecodeVersion(Reader)
+	EGTSPackgeHeader.DecodeProtocolVersion(Reader)
 
 }
 
-/*Декодер версии*/
-func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeVersion(Reader *bytes.Reader) (Error error) {
+/*Декодер версии протокола*/
+func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeProtocolVersion(Reader *bytes.Reader) (Error error) {
 	ByteVersion, Error := EGTSPackgeHeader.BasePackage.ReadNext(Reader, 1)
 	if Error != nil {
 		return Error
