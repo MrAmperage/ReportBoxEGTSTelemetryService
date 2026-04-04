@@ -9,8 +9,8 @@ import (
 type EGTSPackgeHeader struct {
 	/*Базовые инструменты для манипуляции с данными*/
 	BasePackage BasePackage.BasePackage
-	/*Версия*/
-	Version int
+	/*Версия протокола*/
+	ProtocolVersion int
 }
 
 /*Декодер заголовка*/
@@ -25,7 +25,7 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeVersion(Reader *bytes.Reader) (E
 	if Error != nil {
 		return Error
 	}
-	EGTSPackgeHeader.Version = int(ByteVersion[0])
+	EGTSPackgeHeader.ProtocolVersion = int(ByteVersion[0])
 	return Error
 
 }
