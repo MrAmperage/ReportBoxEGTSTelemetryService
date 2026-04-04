@@ -1,6 +1,7 @@
 package Application
 
 import (
+	"ReportBoxEGTSTelemetryService/Application/EGTSPackge"
 	"fmt"
 	"log"
 	"net"
@@ -63,6 +64,8 @@ func (Service *Service) HandlerConnection(Connection net.Conn) {
 			return
 		}
 		Data := Buffer[:ByteCount]
+		Package := &EGTSPackge.EGTSPackge{}
+		Package.Decode(Data)
 		File.Write([]byte(fmt.Sprintf("% x\n", Data)))
 		Connection.Write([]byte("OK\n"))
 	}
