@@ -1,9 +1,7 @@
 package Application
 
 import (
-	"encoding/hex"
 	"fmt"
-	"io"
 	"log"
 	"net"
 	"os"
@@ -50,23 +48,22 @@ func (Service *Service) InitService() error {
 
 }
 func (Service *Service) HandlerConnection(Connection net.Conn) {
+	defer Connection.Close()
 	File, Error := os.OpenFile("message.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if Error != nil {
 		fmt.Println("File open error:", Error)
 		return
 	}
+	defer File.Close()
+	Buffer := make([]byte, 2048)
 	for {
-		Data, Error := io.ReadAll(Connection)
+		ByteCount, Error := Connection.Read(Buffer)
 		if Error != nil {
 			fmt.Println("Client disconnected:", Error)
 			return
 		}
-
-		File.Write([]byte(hex.Dump(Data)))
-		File.Write([]byte("\n"))
+		Data := Buffer[:ByteCount]
+		File.Write([]byte(fmt.Sprintf("% x\n", Data)))
 		Connection.Write([]byte("OK\n"))
-		File.Close()
-		Connection.Close()
-
 	}
 }
