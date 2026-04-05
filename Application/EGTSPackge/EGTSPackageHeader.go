@@ -22,6 +22,7 @@ type EGTSPackgeHeader struct {
 func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Reader *bytes.Reader) {
 	EGTSPackgeHeader.DecodeProtocolVersion(Reader)
 	EGTSPackgeHeader.DecodeSecurityKeyId(Reader)
+	EGTSPackgeHeader.EGTSPackgeHeaderFlags.DecodeFlags(Reader)
 
 }
 
