@@ -16,6 +16,8 @@ type EGTSPackgeHeader struct {
 	SecurityKeyId int
 	/*Флаги*/
 	EGTSPackgeHeaderFlags EGTSPackgeHeaderFlags
+	/*Длинна заголовка*/
+	HeaderLength int
 }
 
 /*Декодер заголовка*/
@@ -23,6 +25,7 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Reader *bytes.Reader) {
 	EGTSPackgeHeader.DecodeProtocolVersion(Reader)
 	EGTSPackgeHeader.DecodeSecurityKeyId(Reader)
 	EGTSPackgeHeader.EGTSPackgeHeaderFlags.DecodeFlags(Reader)
+	EGTSPackgeHeader.DecodeHeaderLength(Reader)
 
 }
 
@@ -46,6 +49,18 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeSecurityKeyId(Reader *bytes.Read
 		return Error
 	}
 	EGTSPackgeHeader.SecurityKeyId = int(BytesSecurityKeyId[0])
+	return Error
+
+}
+
+/*Декодер Security Key Id*/
+func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeHeaderLength(Reader *bytes.Reader) (Error error) {
+	Reader.Seek(3, io.SeekStart)
+	BytesHeaderLength, Error := EGTSPackgeHeader.BasePackage.ReadNext(Reader, 1)
+	if Error != nil {
+		return Error
+	}
+	EGTSPackgeHeader.HeaderLength = int(BytesHeaderLength[0])
 	return Error
 
 }

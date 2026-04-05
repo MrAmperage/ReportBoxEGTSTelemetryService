@@ -67,13 +67,14 @@ func (Service *Service) HandlerConnection(Connection net.Conn) {
 		Package := &EGTSPackge.EGTSPackge{}
 		Package.Decode(Data)
 		File.Write([]byte(fmt.Sprintf("% x\n", Data)))
-		File.Write([]byte(fmt.Sprintf("Версия протокола %d\n", Package.Header.ProtocolVersion)))
+		File.Write([]byte(fmt.Sprintf("Protocol Version %d\n", Package.Header.ProtocolVersion)))
 		File.Write([]byte(fmt.Sprintf("Security Key Id %d\n", Package.Header.SecurityKeyId)))
 		File.Write([]byte(fmt.Sprintf("Prefix Flag %d\n", Package.Header.EGTSPackgeHeaderFlags.Prefix)))
 		File.Write([]byte(fmt.Sprintf("Route Flag %t\n", Package.Header.EGTSPackgeHeaderFlags.Route)))
 		File.Write([]byte(fmt.Sprintf("Encryption Algorithm Flag %d\n", Package.Header.EGTSPackgeHeaderFlags.EncryptionAlgorithm)))
 		File.Write([]byte(fmt.Sprintf("Compression Flag %t\n", Package.Header.EGTSPackgeHeaderFlags.Compression)))
 		File.Write([]byte(fmt.Sprintf("Priority Flag %d\n", Package.Header.EGTSPackgeHeaderFlags.Priority)))
+		File.Write([]byte(fmt.Sprintf("Header Length %d\n", Package.Header.HeaderLength)))
 		Connection.Write([]byte("OK\n"))
 	}
 }
