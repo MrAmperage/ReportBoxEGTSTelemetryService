@@ -8,7 +8,11 @@ type EGTSPackge struct {
 }
 
 /*Декодер пакета*/
-func (EGTSPackge *EGTSPackge) Decode(Data []byte) {
+func (EGTSPackge *EGTSPackge) Decode(Data []byte) (Error error) {
 	Reader := bytes.NewReader(Data)
-	EGTSPackge.Header.Decode(Reader)
+	Error = EGTSPackge.Header.Decode(Reader)
+	if Error != nil {
+		return Error
+	}
+	return Error
 }
