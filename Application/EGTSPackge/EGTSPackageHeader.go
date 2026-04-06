@@ -1,16 +1,11 @@
 package EGTSPackge
 
 import (
-	"ReportBoxEGTSTelemetryService/Application/BasePackage"
-	"bytes"
 	"fmt"
-	"io"
 )
 
 /*Структура для заголовка пакета*/
 type EGTSPackgeHeader struct {
-	/*Базовые инструменты для манипуляции с данными*/
-	BasePackage BasePackage.BasePackage
 	/*Версия протокола*/
 	ProtocolVersion int
 	/*Security Key*/
@@ -24,18 +19,18 @@ type EGTSPackgeHeader struct {
 }
 
 /*Декодер заголовка*/
-func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Reader *bytes.Reader) (Error error) {
-	Version, Error := EGTSPackgeHeader.DecodeProtocolVersion(Reader)
+func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Data []byte) (Error error) {
+	Version, Error := EGTSPackgeHeader.DecodeProtocolVersion(Data)
 	if Error != nil {
 		return Error
 	}
 	EGTSPackgeHeader.ProtocolVersion = Version
-	SecurityKeyId, Error := EGTSPackgeHeader.DecodeSecurityKeyId(Reader)
+	SecurityKeyId, Error := EGTSPackgeHeader.DecodeSecurityKeyId(Data)
 	if Error != nil {
 		return Error
 	}
 	EGTSPackgeHeader.SecurityKeyId = SecurityKeyId
-	Prefix, Route, EncryptionAlgorithm, Compression, Priority, Error := EGTSPackgeHeader.EGTSPackgeHeaderFlags.DecodeFlags(Reader)
+	Prefix, Route, EncryptionAlgorithm, Compression, Priority, Error := EGTSPackgeHeader.EGTSPackgeHeaderFlags.DecodeFlags(Data)
 	if Error != nil {
 		return Error
 	}
@@ -44,12 +39,12 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Reader *bytes.Reader) (Error er
 	EGTSPackgeHeader.EGTSPackgeHeaderFlags.EncryptionAlgorithm = EncryptionAlgorithm
 	EGTSPackgeHeader.EGTSPackgeHeaderFlags.Compression = Compression
 	EGTSPackgeHeader.EGTSPackgeHeaderFlags.Priority = Priority
-	HeaderLength, Error := EGTSPackgeHeader.DecodeHeaderLength(Reader)
+	HeaderLength, Error := EGTSPackgeHeader.DecodeHeaderLength(Data)
 	if Error != nil {
 		return Error
 	}
 	EGTSPackgeHeader.HeaderLength = HeaderLength
-	HeaderEncoding, Error := EGTSPackgeHeader.DecodeHeaderEncoding(Reader)
+	HeaderEncoding, Error := EGTSPackgeHeader.DecodeHeaderEncoding(Data)
 	if Error != nil {
 		return Error
 	}
@@ -58,13 +53,12 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Reader *bytes.Reader) (Error er
 }
 
 /*Декодер версии протокола*/
-func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeProtocolVersion(Reader *bytes.Reader) (ProtocolVersion int, Error error) {
-	Reader.Seek(0, io.SeekStart)
-	BytesVersion, Error := EGTSPackgeHeader.BasePackage.ReadNext(Reader, 1)
-	if Error != nil {
-		return ProtocolVersion, Error
+func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeProtocolVersion(Data []byte) (ProtocolVersion int, Error error) {
+	var PackageLength = len(Data)
+	if PackageLength < 1 {
+		return ProtocolVersion, fmt.Errorf("В сообщении нет Protocol Version")
 	}
-	ProtocolVersion = int(BytesVersion[0])
+	ProtocolVersion = int(Data[0])
 	if ProtocolVersion != 1 {
 		return ProtocolVersion, fmt.Errorf("Версия протокола не поддерживается - %d", ProtocolVersion)
 	}
@@ -72,41 +66,35 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeProtocolVersion(Reader *bytes.Re
 }
 
 /*Декодер Security Key Id*/
-func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeSecurityKeyId(Reader *bytes.Reader) (SecurityKeyId int, Error error) {
-	Reader.Seek(1, io.SeekStart)
-	BytesSecurityKeyId, Error := EGTSPackgeHeader.BasePackage.ReadNext(Reader, 1)
-	if Error != nil {
-		return SecurityKeyId, Error
+func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeSecurityKeyId(Data []byte) (SecurityKeyId int, Error error) {
+	var PackageLength = len(Data)
+	if PackageLength < 2 {
+		return SecurityKeyId, fmt.Errorf("В сообщении нет Security Key Id")
 	}
-	SecurityKeyId = int(BytesSecurityKeyId[0])
+	SecurityKeyId = int(Data[1])
 	return SecurityKeyId, Error
-
 }
 
 /*Декодер Security Key Id*/
-func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeHeaderLength(Reader *bytes.Reader) (HeaderLength int, Error error) {
-	Reader.Seek(3, io.SeekStart)
-	BytesHeaderLength, Error := EGTSPackgeHeader.BasePackage.ReadNext(Reader, 1)
-	if Error != nil {
-		return HeaderLength, Error
+func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeHeaderLength(Data []byte) (HeaderLength int, Error error) {
+	var PackageLength = len(Data)
+	if PackageLength < 4 {
+		return HeaderLength, fmt.Errorf("В сообщении нет Header Length")
 	}
-	HeaderLength = int(BytesHeaderLength[0])
+	HeaderLength = int(Data[3])
 	if HeaderLength < 11 || HeaderLength > 1024 {
 		return HeaderLength, fmt.Errorf("Неправильная длина заголовка - %d", HeaderLength)
 	}
 	return HeaderLength, Error
-
 }
 
 /*Декодер HeaderEncoding*/
-func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeHeaderEncoding(Reader *bytes.Reader) (HeaderEncoding int, Error error) {
-	Reader.Seek(4, io.SeekStart)
-	BytesHeaderEncoding, Error := EGTSPackgeHeader.BasePackage.ReadNext(Reader, 1)
-	if Error != nil {
-		return HeaderEncoding, Error
+func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeHeaderEncoding(Data []byte) (HeaderEncoding int, Error error) {
+	var PackageLength = len(Data)
+	if PackageLength < 5 {
+		return HeaderEncoding, fmt.Errorf("В сообщении нет Header Encoding")
 	}
-	HeaderEncoding = int(BytesHeaderEncoding[0])
-
+	HeaderEncoding = int(Data[4])
 	return HeaderEncoding, Error
 
 }
