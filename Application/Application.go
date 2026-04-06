@@ -56,6 +56,7 @@ func (Service *Service) HandlerConnection(Connection net.Conn) {
 		return
 	}
 	defer File.Close()
+	//TODO Дописать динамическое выделение памяти для буфера
 	Buffer := make([]byte, 2048)
 	for {
 		ByteCount, Error := Connection.Read(Buffer)
