@@ -79,6 +79,7 @@ func (Service *Service) HandlerConnection(Connection net.Conn) {
 			File.Write([]byte(fmt.Sprintf("Compression Flag %t\n", Package.Header.EGTSPackgeHeaderFlags.Compression)))
 			File.Write([]byte(fmt.Sprintf("Priority Flag %d\n", Package.Header.EGTSPackgeHeaderFlags.Priority)))
 			File.Write([]byte(fmt.Sprintf("Header Length %d\n", Package.Header.HeaderLength)))
+			File.Write([]byte(fmt.Sprintf("Header Encoding %d\n", Package.Header.HeaderEncoding)))
 		}
 
 		Connection.Write([]byte("OK\n"))

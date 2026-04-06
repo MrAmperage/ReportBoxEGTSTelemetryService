@@ -19,6 +19,8 @@ type EGTSPackgeHeader struct {
 	EGTSPackgeHeaderFlags EGTSPackgeHeaderFlags
 	/*Длинна заголовка*/
 	HeaderLength int
+	/*Метод кодирования*/
+	HeaderEncoding int
 }
 
 /*Декодер заголовка*/
@@ -47,8 +49,12 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Reader *bytes.Reader) (Error er
 		return Error
 	}
 	EGTSPackgeHeader.HeaderLength = HeaderLength
+	HeaderEncoding, Error := EGTSPackgeHeader.DecodeHeaderEncoding(Reader)
+	if Error != nil {
+		return Error
+	}
+	EGTSPackgeHeader.HeaderEncoding = HeaderEncoding
 	return Error
-
 }
 
 /*Декодер версии протокола*/
@@ -89,5 +95,18 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeHeaderLength(Reader *bytes.Reade
 		return HeaderLength, fmt.Errorf("Неправильная длина заголовка - %d", HeaderLength)
 	}
 	return HeaderLength, Error
+
+}
+
+/*Декодер HeaderEncoding*/
+func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeHeaderEncoding(Reader *bytes.Reader) (HeaderEncoding int, Error error) {
+	Reader.Seek(4, io.SeekStart)
+	BytesHeaderEncoding, Error := EGTSPackgeHeader.BasePackage.ReadNext(Reader, 1)
+	if Error != nil {
+		return HeaderEncoding, Error
+	}
+	HeaderEncoding = int(BytesHeaderEncoding[0])
+
+	return HeaderEncoding, Error
 
 }
