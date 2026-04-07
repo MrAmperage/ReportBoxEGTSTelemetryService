@@ -82,7 +82,7 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeHeaderLength(Data []byte) (Heade
 		return HeaderLength, fmt.Errorf("В сообщении нет Header Length")
 	}
 	HeaderLength = int(Data[3])
-	if HeaderLength < 11 || HeaderLength > 1024 {
+	if HeaderLength < 11 {
 		return HeaderLength, fmt.Errorf("Неправильная длина заголовка - %d", HeaderLength)
 	}
 	return HeaderLength, Error
