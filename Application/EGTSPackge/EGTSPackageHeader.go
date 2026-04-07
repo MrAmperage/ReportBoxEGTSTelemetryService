@@ -1,6 +1,7 @@
 package EGTSPackge
 
 import (
+	"encoding/binary"
 	"fmt"
 )
 
@@ -16,6 +17,8 @@ type EGTSPackgeHeader struct {
 	HeaderLength int
 	/*Метод кодирования*/
 	HeaderEncoding int
+	/*Длина пакета данных*/
+	FrameDataLength int
 }
 
 /*Декодер заголовка*/
@@ -49,6 +52,12 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Data []byte) (Error error) {
 		return Error
 	}
 	EGTSPackgeHeader.HeaderEncoding = HeaderEncoding
+
+	FrameDataLength, Error := EGTSPackgeHeader.DecodeFrameDataLength(Data)
+	if Error != nil {
+		return Error
+	}
+	EGTSPackgeHeader.FrameDataLength = FrameDataLength
 	return Error
 }
 
@@ -96,5 +105,16 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeHeaderEncoding(Data []byte) (Hea
 	}
 	HeaderEncoding = int(Data[4])
 	return HeaderEncoding, Error
+
+}
+
+/*Декодер FrameDataLength*/
+func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeFrameDataLength(Data []byte) (FrameDataLength int, Error error) {
+	var PackageLength = len(Data)
+	if PackageLength < 7 {
+		return FrameDataLength, fmt.Errorf("В сообщении нет Frame Data Length")
+	}
+	FrameDataLength = int(binary.LittleEndian.Uint16(Data[5:7]))
+	return FrameDataLength, Error
 
 }
