@@ -25,6 +25,8 @@ type EGTSPackgeHeader struct {
 	PacketType int
 	/*Адрес сгенерировавший пакет*/
 	PeerAddress int
+	/*Адрес для которого пакет предназначен*/
+	RecipientAddress int
 }
 
 /*Декодер заголовка*/
@@ -82,6 +84,12 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Data []byte) (Error error) {
 		return Error
 	}
 	EGTSPackgeHeader.PeerAddress = PeerAddress
+
+	RecipientAddress, Error := EGTSPackgeHeader.DecodeRecipientAddress(Data)
+	if Error != nil {
+		return Error
+	}
+	EGTSPackgeHeader.RecipientAddress = RecipientAddress
 
 	return Error
 }
@@ -171,10 +179,25 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) DecodePeerAddress(Data []byte) (PeerAd
 	if EGTSPackgeHeader.EGTSPackgeHeaderFlags.Route {
 		var PackageLength = len(Data)
 		if PackageLength < 11 {
-			return PeerAddress, fmt.Errorf("В сообщении нет Packet Peer Address")
+			return PeerAddress, fmt.Errorf("В сообщении нет Peer Address")
 		}
 		PeerAddress = int(binary.LittleEndian.Uint16(Data[9:11]))
 		return PeerAddress, Error
+	} else {
+		return 0, nil
+	}
+
+}
+
+/*Декодер Recipient Address*/
+func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeRecipientAddress(Data []byte) (RecipientAddress int, Error error) {
+	if EGTSPackgeHeader.EGTSPackgeHeaderFlags.Route {
+		var PackageLength = len(Data)
+		if PackageLength < 13 {
+			return RecipientAddress, fmt.Errorf("В сообщении нет Recipient Address")
+		}
+		RecipientAddress = int(binary.LittleEndian.Uint16(Data[11:13]))
+		return RecipientAddress, Error
 	} else {
 		return 0, nil
 	}
