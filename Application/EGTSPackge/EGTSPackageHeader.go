@@ -21,6 +21,8 @@ type EGTSPackgeHeader struct {
 	FrameDataLength int
 	/*Id пакета*/
 	PacketIdentifier int
+	/*Тип пакета*/
+	PacketType int
 }
 
 /*Декодер заголовка*/
@@ -66,6 +68,12 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Data []byte) (Error error) {
 		return Error
 	}
 	EGTSPackgeHeader.PacketIdentifier = PacketIdentifier
+
+	PacketType, Error := EGTSPackgeHeader.DecodePacketType(Data)
+	if Error != nil {
+		return Error
+	}
+	EGTSPackgeHeader.PacketType = PacketType
 	return Error
 }
 
@@ -135,5 +143,27 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) DecodePacketIdentifier(Data []byte) (P
 	}
 	PacketIdentifier = int(binary.LittleEndian.Uint16(Data[7:9]))
 	return PacketIdentifier, Error
+
+}
+
+/*Декодер Packet Type*/
+func (EGTSPackgeHeader *EGTSPackgeHeader) DecodePacketType(Data []byte) (PacketType int, Error error) {
+	var PackageLength = len(Data)
+	if PackageLength < 9 {
+		return PacketType, fmt.Errorf("В сообщении нет Packet Type")
+	}
+	PacketType = int(Data[9])
+	return PacketType, Error
+
+}
+
+/*Текстовое представление типа пакета*/
+func (EGTSPackgeHeader *EGTSPackgeHeader) PacketTypeToString(PacketType int) string {
+	switch PacketType {
+	case 1:
+		return "EGTS_PT_APPDATA"
+	default:
+		return ""
+	}
 
 }
