@@ -160,8 +160,12 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) DecodePacketType(Data []byte) (PacketT
 /*Текстовое представление типа пакета*/
 func (EGTSPackgeHeader *EGTSPackgeHeader) PacketTypeToString(PacketType int) string {
 	switch PacketType {
+	case 0:
+		return "EGTS_PT_RESPONSE"
 	case 1:
 		return "EGTS_PT_APPDATA"
+	case 2:
+		return "EGTS_PT_SIGNED_APPDATA"
 	default:
 		return ""
 	}
