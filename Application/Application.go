@@ -84,6 +84,10 @@ func (Service *Service) HandlerConnection(Connection net.Conn) {
 			File.Write([]byte(fmt.Sprintf("Frame Data Length: %d\n", Package.Header.FrameDataLength)))
 			File.Write([]byte(fmt.Sprintf("Packet Identifier: %d\n", Package.Header.PacketIdentifier)))
 			File.Write([]byte(fmt.Sprintf("Packet Type: %s\n", Package.Header.PacketTypeToString(Package.Header.PacketType))))
+			if Package.Header.EGTSPackgeHeaderFlags.Route {
+				File.Write([]byte(fmt.Sprintf("Peer Address: %d\n", Package.Header.PeerAddress)))
+
+			}
 		}
 
 		Connection.Write([]byte("OK\n"))
