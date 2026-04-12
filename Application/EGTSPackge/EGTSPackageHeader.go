@@ -12,7 +12,7 @@ type EGTSPackgeHeader struct {
 	/*Security Key*/
 	SecurityKeyId int
 	/*Флаги*/
-	EGTSPackgeHeaderFlags EGTSPackgeHeaderFlags
+	Flags EGTSPackgeHeaderFlags
 	/*Длинна заголовка*/
 	HeaderLength int
 	/*Метод кодирования*/
@@ -27,6 +27,8 @@ type EGTSPackgeHeader struct {
 	PeerAddress int
 	/*Адрес для которого пакет предназначен*/
 	RecipientAddress int
+	/*Время жизни пакета*/
+	TimeToLive int
 }
 
 /*Декодер заголовка*/
@@ -41,15 +43,15 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Data []byte) (Error error) {
 		return Error
 	}
 	EGTSPackgeHeader.SecurityKeyId = SecurityKeyId
-	Prefix, Route, EncryptionAlgorithm, Compression, Priority, Error := EGTSPackgeHeader.EGTSPackgeHeaderFlags.DecodeFlags(Data)
+	Prefix, Route, EncryptionAlgorithm, Compression, Priority, Error := EGTSPackgeHeader.Flags.DecodeFlags(Data)
 	if Error != nil {
 		return Error
 	}
-	EGTSPackgeHeader.EGTSPackgeHeaderFlags.Prefix = Prefix
-	EGTSPackgeHeader.EGTSPackgeHeaderFlags.Route = Route
-	EGTSPackgeHeader.EGTSPackgeHeaderFlags.EncryptionAlgorithm = EncryptionAlgorithm
-	EGTSPackgeHeader.EGTSPackgeHeaderFlags.Compression = Compression
-	EGTSPackgeHeader.EGTSPackgeHeaderFlags.Priority = Priority
+	EGTSPackgeHeader.Flags.Prefix = Prefix
+	EGTSPackgeHeader.Flags.Route = Route
+	EGTSPackgeHeader.Flags.EncryptionAlgorithm = EncryptionAlgorithm
+	EGTSPackgeHeader.Flags.Compression = Compression
+	EGTSPackgeHeader.Flags.Priority = Priority
 	HeaderLength, Error := EGTSPackgeHeader.DecodeHeaderLength(Data)
 	if Error != nil {
 		return Error
@@ -90,6 +92,12 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Data []byte) (Error error) {
 		return Error
 	}
 	EGTSPackgeHeader.RecipientAddress = RecipientAddress
+
+	TimeToLive, Error := EGTSPackgeHeader.DecodeTimeToLive(Data)
+	if Error != nil {
+		return Error
+	}
+	EGTSPackgeHeader.TimeToLive = TimeToLive
 
 	return Error
 }
@@ -176,7 +184,7 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) DecodePacketType(Data []byte) (PacketT
 
 /*Декодер Peer Address*/
 func (EGTSPackgeHeader *EGTSPackgeHeader) DecodePeerAddress(Data []byte) (PeerAddress int, Error error) {
-	if EGTSPackgeHeader.EGTSPackgeHeaderFlags.Route {
+	if EGTSPackgeHeader.Flags.Route {
 		var PackageLength = len(Data)
 		if PackageLength < 11 {
 			return PeerAddress, fmt.Errorf("В сообщении нет Peer Address")
@@ -191,13 +199,28 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) DecodePeerAddress(Data []byte) (PeerAd
 
 /*Декодер Recipient Address*/
 func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeRecipientAddress(Data []byte) (RecipientAddress int, Error error) {
-	if EGTSPackgeHeader.EGTSPackgeHeaderFlags.Route {
+	if EGTSPackgeHeader.Flags.Route {
 		var PackageLength = len(Data)
 		if PackageLength < 13 {
 			return RecipientAddress, fmt.Errorf("В сообщении нет Recipient Address")
 		}
 		RecipientAddress = int(binary.LittleEndian.Uint16(Data[11:13]))
 		return RecipientAddress, Error
+	} else {
+		return 0, nil
+	}
+
+}
+
+/*Декодер Time To Live*/
+func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeTimeToLive(Data []byte) (TimeToLive int, Error error) {
+	if EGTSPackgeHeader.Flags.Route {
+		var PackageLength = len(Data)
+		if PackageLength < 14 {
+			return TimeToLive, fmt.Errorf("В сообщении нет Time To Live")
+		}
+		TimeToLive = int(Data[13])
+		return TimeToLive, Error
 	} else {
 		return 0, nil
 	}
