@@ -82,6 +82,7 @@ func (Service *Service) HandlerConnection(Connection net.Conn) {
 			File.Write([]byte(fmt.Sprintf("Header Length %d\n", Package.Header.HeaderLength)))
 			File.Write([]byte(fmt.Sprintf("Header Encoding %d\n", Package.Header.HeaderEncoding)))
 			File.Write([]byte(fmt.Sprintf("Frame Data Length %d\n", Package.Header.FrameDataLength)))
+			File.Write([]byte(fmt.Sprintf("Packet Identifier %d\n", Package.Header.PacketIdentifier)))
 		}
 
 		Connection.Write([]byte("OK\n"))

@@ -19,6 +19,8 @@ type EGTSPackgeHeader struct {
 	HeaderEncoding int
 	/*Длина пакета данных*/
 	FrameDataLength int
+	/*Id пакета*/
+	PacketIdentifier int
 }
 
 /*Декодер заголовка*/
@@ -58,6 +60,12 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Data []byte) (Error error) {
 		return Error
 	}
 	EGTSPackgeHeader.FrameDataLength = FrameDataLength
+
+	PacketIdentifier, Error := EGTSPackgeHeader.DecodePacketIdentifier(Data)
+	if Error != nil {
+		return Error
+	}
+	EGTSPackgeHeader.PacketIdentifier = PacketIdentifier
 	return Error
 }
 
@@ -116,5 +124,16 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeFrameDataLength(Data []byte) (Fr
 	}
 	FrameDataLength = int(binary.LittleEndian.Uint16(Data[5:7]))
 	return FrameDataLength, Error
+
+}
+
+/*Декодер Packet Identifier*/
+func (EGTSPackgeHeader *EGTSPackgeHeader) DecodePacketIdentifier(Data []byte) (PacketIdentifier int, Error error) {
+	var PackageLength = len(Data)
+	if PackageLength < 9 {
+		return PacketIdentifier, fmt.Errorf("В сообщении нет Packet Identifier")
+	}
+	PacketIdentifier = int(binary.LittleEndian.Uint16(Data[7:9]))
+	return PacketIdentifier, Error
 
 }
