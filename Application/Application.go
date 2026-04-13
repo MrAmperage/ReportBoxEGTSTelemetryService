@@ -90,6 +90,7 @@ func (Service *Service) HandlerConnection(Connection net.Conn) {
 				File.Write([]byte(fmt.Sprintf("Time To Live: %d\n", Package.Header.TimeToLive)))
 
 			}
+			File.Write([]byte(fmt.Sprintf("Header Check Sum: %d\n", Package.Header.HeaderCheckSum)))
 		}
 
 		Connection.Write([]byte("OK\n"))

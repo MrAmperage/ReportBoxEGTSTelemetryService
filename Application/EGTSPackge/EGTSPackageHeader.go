@@ -1,234 +1,41 @@
 package EGTSPackge
 
-import (
-	"encoding/binary"
-	"fmt"
-)
-
 /*Структура для заголовка пакета*/
 type EGTSPackgeHeader struct {
 	/*Версия протокола*/
-	ProtocolVersion int
+	ProtocolVersion uint8
 	/*Security Key*/
-	SecurityKeyId int
+	SecurityKeyId uint8
 	/*Флаги*/
 	Flags EGTSPackgeHeaderFlags
 	/*Длинна заголовка*/
-	HeaderLength int
+	HeaderLength uint8
 	/*Метод кодирования*/
-	HeaderEncoding int
+	HeaderEncoding uint8
 	/*Длина пакета данных*/
-	FrameDataLength int
+	FrameDataLength uint16
 	/*Id пакета*/
-	PacketIdentifier int
+	PacketIdentifier uint16
 	/*Тип пакета*/
-	PacketType int
+	PacketType uint8
 	/*Адрес сгенерировавший пакет*/
-	PeerAddress int
+	PeerAddress uint16
 	/*Адрес для которого пакет предназначен*/
-	RecipientAddress int
+	RecipientAddress uint16
 	/*Время жизни пакета*/
-	TimeToLive int
+	TimeToLive uint8
+	/*Контрольная сумма заголовка*/
+	HeaderCheckSum uint8
 }
 
 /*Декодер заголовка*/
 func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Data []byte) (Error error) {
-	Version, Error := EGTSPackgeHeader.DecodeProtocolVersion(Data)
-	if Error != nil {
-		return Error
-	}
-	EGTSPackgeHeader.ProtocolVersion = Version
-	SecurityKeyId, Error := EGTSPackgeHeader.DecodeSecurityKeyId(Data)
-	if Error != nil {
-		return Error
-	}
-	EGTSPackgeHeader.SecurityKeyId = SecurityKeyId
-	Prefix, Route, EncryptionAlgorithm, Compression, Priority, Error := EGTSPackgeHeader.Flags.DecodeFlags(Data)
-	if Error != nil {
-		return Error
-	}
-	EGTSPackgeHeader.Flags.Prefix = Prefix
-	EGTSPackgeHeader.Flags.Route = Route
-	EGTSPackgeHeader.Flags.EncryptionAlgorithm = EncryptionAlgorithm
-	EGTSPackgeHeader.Flags.Compression = Compression
-	EGTSPackgeHeader.Flags.Priority = Priority
-	HeaderLength, Error := EGTSPackgeHeader.DecodeHeaderLength(Data)
-	if Error != nil {
-		return Error
-	}
-	EGTSPackgeHeader.HeaderLength = HeaderLength
-	HeaderEncoding, Error := EGTSPackgeHeader.DecodeHeaderEncoding(Data)
-	if Error != nil {
-		return Error
-	}
-	EGTSPackgeHeader.HeaderEncoding = HeaderEncoding
-
-	FrameDataLength, Error := EGTSPackgeHeader.DecodeFrameDataLength(Data)
-	if Error != nil {
-		return Error
-	}
-	EGTSPackgeHeader.FrameDataLength = FrameDataLength
-
-	PacketIdentifier, Error := EGTSPackgeHeader.DecodePacketIdentifier(Data)
-	if Error != nil {
-		return Error
-	}
-	EGTSPackgeHeader.PacketIdentifier = PacketIdentifier
-
-	PacketType, Error := EGTSPackgeHeader.DecodePacketType(Data)
-	if Error != nil {
-		return Error
-	}
-	EGTSPackgeHeader.PacketType = PacketType
-
-	PeerAddress, Error := EGTSPackgeHeader.DecodePeerAddress(Data)
-	if Error != nil {
-		return Error
-	}
-	EGTSPackgeHeader.PeerAddress = PeerAddress
-
-	RecipientAddress, Error := EGTSPackgeHeader.DecodeRecipientAddress(Data)
-	if Error != nil {
-		return Error
-	}
-	EGTSPackgeHeader.RecipientAddress = RecipientAddress
-
-	TimeToLive, Error := EGTSPackgeHeader.DecodeTimeToLive(Data)
-	if Error != nil {
-		return Error
-	}
-	EGTSPackgeHeader.TimeToLive = TimeToLive
 
 	return Error
 }
 
-/*Декодер версии протокола*/
-func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeProtocolVersion(Data []byte) (ProtocolVersion int, Error error) {
-	var PackageLength = len(Data)
-	if PackageLength < 1 {
-		return ProtocolVersion, fmt.Errorf("В сообщении нет Protocol Version")
-	}
-	ProtocolVersion = int(Data[0])
-	if ProtocolVersion != 1 {
-		return ProtocolVersion, fmt.Errorf("Версия протокола не поддерживается - %d", ProtocolVersion)
-	}
-	return ProtocolVersion, Error
-}
-
-/*Декодер Security Key Id*/
-func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeSecurityKeyId(Data []byte) (SecurityKeyId int, Error error) {
-	var PackageLength = len(Data)
-	if PackageLength < 2 {
-		return SecurityKeyId, fmt.Errorf("В сообщении нет Security Key Id")
-	}
-	SecurityKeyId = int(Data[1])
-	return SecurityKeyId, Error
-}
-
-/*Декодер Security Key Id*/
-func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeHeaderLength(Data []byte) (HeaderLength int, Error error) {
-	var PackageLength = len(Data)
-	if PackageLength < 4 {
-		return HeaderLength, fmt.Errorf("В сообщении нет Header Length")
-	}
-	HeaderLength = int(Data[3])
-	if HeaderLength < 11 {
-		return HeaderLength, fmt.Errorf("Неправильная длина заголовка - %d", HeaderLength)
-	}
-	return HeaderLength, Error
-}
-
-/*Декодер HeaderEncoding*/
-func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeHeaderEncoding(Data []byte) (HeaderEncoding int, Error error) {
-	var PackageLength = len(Data)
-	if PackageLength < 5 {
-		return HeaderEncoding, fmt.Errorf("В сообщении нет Header Encoding")
-	}
-	HeaderEncoding = int(Data[4])
-	return HeaderEncoding, Error
-
-}
-
-/*Декодер FrameDataLength*/
-func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeFrameDataLength(Data []byte) (FrameDataLength int, Error error) {
-	var PackageLength = len(Data)
-	if PackageLength < 7 {
-		return FrameDataLength, fmt.Errorf("В сообщении нет Frame Data Length")
-	}
-	FrameDataLength = int(binary.LittleEndian.Uint16(Data[5:7]))
-	return FrameDataLength, Error
-
-}
-
-/*Декодер Packet Identifier*/
-func (EGTSPackgeHeader *EGTSPackgeHeader) DecodePacketIdentifier(Data []byte) (PacketIdentifier int, Error error) {
-	var PackageLength = len(Data)
-	if PackageLength < 9 {
-		return PacketIdentifier, fmt.Errorf("В сообщении нет Packet Identifier")
-	}
-	PacketIdentifier = int(binary.LittleEndian.Uint16(Data[7:9]))
-	return PacketIdentifier, Error
-
-}
-
-/*Декодер Packet Type*/
-func (EGTSPackgeHeader *EGTSPackgeHeader) DecodePacketType(Data []byte) (PacketType int, Error error) {
-	var PackageLength = len(Data)
-	if PackageLength < 9 {
-		return PacketType, fmt.Errorf("В сообщении нет Packet Type")
-	}
-	PacketType = int(Data[9])
-	return PacketType, Error
-
-}
-
-/*Декодер Peer Address*/
-func (EGTSPackgeHeader *EGTSPackgeHeader) DecodePeerAddress(Data []byte) (PeerAddress int, Error error) {
-	if EGTSPackgeHeader.Flags.Route {
-		var PackageLength = len(Data)
-		if PackageLength < 11 {
-			return PeerAddress, fmt.Errorf("В сообщении нет Peer Address")
-		}
-		PeerAddress = int(binary.LittleEndian.Uint16(Data[9:11]))
-		return PeerAddress, Error
-	} else {
-		return 0, nil
-	}
-
-}
-
-/*Декодер Recipient Address*/
-func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeRecipientAddress(Data []byte) (RecipientAddress int, Error error) {
-	if EGTSPackgeHeader.Flags.Route {
-		var PackageLength = len(Data)
-		if PackageLength < 13 {
-			return RecipientAddress, fmt.Errorf("В сообщении нет Recipient Address")
-		}
-		RecipientAddress = int(binary.LittleEndian.Uint16(Data[11:13]))
-		return RecipientAddress, Error
-	} else {
-		return 0, nil
-	}
-
-}
-
-/*Декодер Time To Live*/
-func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeTimeToLive(Data []byte) (TimeToLive int, Error error) {
-	if EGTSPackgeHeader.Flags.Route {
-		var PackageLength = len(Data)
-		if PackageLength < 14 {
-			return TimeToLive, fmt.Errorf("В сообщении нет Time To Live")
-		}
-		TimeToLive = int(Data[13])
-		return TimeToLive, Error
-	} else {
-		return 0, nil
-	}
-
-}
-
 /*Текстовое представление типа пакета*/
-func (EGTSPackgeHeader *EGTSPackgeHeader) PacketTypeToString(PacketType int) string {
+func (EGTSPackgeHeader *EGTSPackgeHeader) PacketTypeToString(PacketType uint8) string {
 	switch PacketType {
 	case 0:
 		return "EGTS_PT_RESPONSE"
@@ -237,7 +44,7 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) PacketTypeToString(PacketType int) str
 	case 2:
 		return "EGTS_PT_SIGNED_APPDATA"
 	default:
-		return ""
+		return "Unknown"
 	}
 
 }

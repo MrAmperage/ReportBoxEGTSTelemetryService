@@ -3,11 +3,11 @@ package EGTSPackge
 import "fmt"
 
 type EGTSPackgeHeaderFlags struct {
-	Prefix              int
+	Prefix              uint8
 	Route               bool
-	EncryptionAlgorithm int
+	EncryptionAlgorithm uint8
 	Compression         bool
-	Priority            int
+	Priority            uint8
 }
 
 /*Декодер байтовых флагов*/
