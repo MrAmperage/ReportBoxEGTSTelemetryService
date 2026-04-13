@@ -1,6 +1,8 @@
 package EGTSPackge
 
-import "bytes"
+import (
+	"bytes"
+)
 
 /*Структура для заголовка пакета*/
 type EGTSPackgeHeader struct {
