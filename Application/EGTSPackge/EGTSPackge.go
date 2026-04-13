@@ -1,14 +1,16 @@
 package EGTSPackge
 
+import "bytes"
+
 /*Структура для ЕГТС пакета*/
 type EGTSPackge struct {
 	Header EGTSPackgeHeader /*Заголовок пакета*/
 }
 
 /*Декодер пакета*/
-func (EGTSPackge *EGTSPackge) Decode(Data []byte) (Error error) {
+func (EGTSPackge *EGTSPackge) Decode(Reader *bytes.Reader) (Error error) {
 
-	Error = EGTSPackge.Header.Decode(Data)
+	Error = EGTSPackge.Header.Decode(Reader)
 	if Error != nil {
 		return Error
 	}

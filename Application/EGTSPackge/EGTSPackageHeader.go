@@ -1,5 +1,7 @@
 package EGTSPackge
 
+import "bytes"
+
 /*Структура для заголовка пакета*/
 type EGTSPackgeHeader struct {
 	/*Версия протокола*/
@@ -29,7 +31,7 @@ type EGTSPackgeHeader struct {
 }
 
 /*Декодер заголовка*/
-func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Data []byte) (Error error) {
+func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Reader *bytes.Reader) (Error error) {
 
 	return Error
 }
