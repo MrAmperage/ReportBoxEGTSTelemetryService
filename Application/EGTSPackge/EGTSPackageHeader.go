@@ -78,6 +78,12 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Reader *bytes.Reader) (Error er
 		return Error
 	}
 	EGTSPackgeHeader.PacketIdentifier = PacketIdentifier
+
+	PacketType, Error := EGTSPackgeHeader.DecodePacketType(Reader)
+	if Error != nil {
+		return Error
+	}
+	EGTSPackgeHeader.PacketType = PacketType
 	return Error
 }
 
@@ -89,6 +95,10 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeHeaderEncoding(Reader *bytes.Rea
 func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeFrameDataLength(Reader *bytes.Reader) (FrameDataLength uint16, Error error) {
 	FrameDataLength, Error = ReadUshort(Reader)
 	return FrameDataLength, Error
+}
+func (EGTSPackgeHeader *EGTSPackgeHeader) DecodePacketType(Reader *bytes.Reader) (PacketType uint8, Error error) {
+	PacketType, Error = ReadByte(Reader)
+	return PacketType, Error
 }
 
 /*Декодирование версии протокола*/
