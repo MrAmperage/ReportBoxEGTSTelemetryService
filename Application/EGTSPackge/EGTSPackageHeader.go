@@ -66,6 +66,12 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Reader *bytes.Reader) (Error er
 		return Error
 	}
 	EGTSPackgeHeader.HeaderEncoding = HeaderEncoding
+
+	FrameDataLength, Error := EGTSPackgeHeader.DecodeFrameDataLength(Reader)
+	if Error != nil {
+		return Error
+	}
+	EGTSPackgeHeader.FrameDataLength = FrameDataLength
 	return Error
 }
 
@@ -73,6 +79,10 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeHeaderEncoding(Reader *bytes.Rea
 	HeaderEncoding, Error = ReadByte(Reader)
 	return HeaderEncoding, Error
 
+}
+func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeFrameDataLength(Reader *bytes.Reader) (FrameDataLength uint16, Error error) {
+	FrameDataLength, Error = ReadUshort(Reader)
+	return FrameDataLength, Error
 }
 
 /*Декодирование версии протокола*/
