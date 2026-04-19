@@ -86,16 +86,36 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Reader *bytes.Reader) (Error er
 	EGTSPackgeHeader.PacketType = PacketType
 
 	if EGTSPackgeHeader.Flags.Route {
-		PeerAddress, Error := DecodePeerAddress(Reader)
+		PeerAddress, Error := EGTSPackgeHeader.DecodePeerAddress(Reader)
 		if Error != nil {
 			return Error
 		}
 		EGTSPackgeHeader.PeerAddress = PeerAddress
+
+		RecipientAddress, Error := EGTSPackgeHeader.DecodeRecipientAddress(Reader)
+		if Error != nil {
+			return Error
+		}
+		EGTSPackgeHeader.RecipientAddress = RecipientAddress
+
+		TimeToLive, Error := EGTSPackgeHeader.DecodeTimeToLive(Reader)
+		if Error != nil {
+			return Error
+		}
+		EGTSPackgeHeader.TimeToLive = TimeToLive
 	}
 
 	return Error
 }
+func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeTimeToLive(Reader *bytes.Reader) (TimeToLive uint8, Error error) {
+	TimeToLive, Error = ReadByte(Reader)
+	return TimeToLive, Error
+}
 
+func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeRecipientAddress(Reader *bytes.Reader) (RecipientAddress uint16, Error error) {
+	RecipientAddress, Error = ReadUshort(Reader)
+	return RecipientAddress, Error
+}
 func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeHeaderEncoding(Reader *bytes.Reader) (HeaderEncoding uint8, Error error) {
 	HeaderEncoding, Error = ReadByte(Reader)
 	return HeaderEncoding, Error
@@ -131,7 +151,7 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeHeaderLength(Reader *bytes.Reade
 	return HeaderLength, Error
 }
 
-func DecodePeerAddress(Reader *bytes.Reader) (PeerAddress uint16, Error error) {
+func (EGTSPackgeHeader *EGTSPackgeHeader) DecodePeerAddress(Reader *bytes.Reader) (PeerAddress uint16, Error error) {
 	PeerAddress, Error = ReadUshort(Reader)
 	return PeerAddress, Error
 
