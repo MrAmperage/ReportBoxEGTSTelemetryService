@@ -84,6 +84,15 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Reader *bytes.Reader) (Error er
 		return Error
 	}
 	EGTSPackgeHeader.PacketType = PacketType
+
+	if EGTSPackgeHeader.Flags.Route {
+		PeerAddress, Error := DecodePeerAddress(Reader)
+		if Error != nil {
+			return Error
+		}
+		EGTSPackgeHeader.PeerAddress = PeerAddress
+	}
+
 	return Error
 }
 
@@ -120,6 +129,12 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeSecurityKeyId(Reader *bytes.Read
 func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeHeaderLength(Reader *bytes.Reader) (HeaderLength uint8, Error error) {
 	HeaderLength, Error = ReadByte(Reader)
 	return HeaderLength, Error
+}
+
+func DecodePeerAddress(Reader *bytes.Reader) (PeerAddress uint16, Error error) {
+	PeerAddress, Error = ReadUshort(Reader)
+	return PeerAddress, Error
+
 }
 
 /*Текстовое представление типа пакета*/
