@@ -2,7 +2,6 @@ package Application
 
 import (
 	"ReportBoxEGTSTelemetryService/Application/EGTSPackge"
-	"bytes"
 	"fmt"
 	"log"
 	"net"
@@ -57,22 +56,17 @@ func (Service *Service) HandlerConnection(Connection net.Conn) {
 		return
 	}
 	defer File.Close()
-	//TODO Дописать динамическое выделение памяти для буфера
-	Buffer := make([]byte, 2048)
-	for {
-		ByteCount, Error := Connection.Read(Buffer)
-		if Error != nil {
-			fmt.Println("Client disconnected:", Error)
-			return
-		}
-		Data := Buffer[:ByteCount]
 
-		File.Write([]byte(fmt.Sprintf("% x\n", Data)))
+	for {
+
 		Package := &EGTSPackge.EGTSPackge{}
-		Reader := bytes.NewReader(Data)
-		Error = Package.Decode(Reader)
+		ByteMessage, Error := Package.ReadMessage(Connection)
+		File.Write([]byte(fmt.Sprintf("% x\n", ByteMessage)))
+
+		Error = Package.Decode(ByteMessage)
 		if Error != nil {
 			File.Write([]byte(fmt.Sprintf("Ошибка: %s\n", Error)))
+			return
 		} else {
 			File.Write([]byte(fmt.Sprintf("Protocol Version: %d\n", Package.Header.ProtocolVersion)))
 			File.Write([]byte(fmt.Sprintf("Security Key Id: %d\n", Package.Header.SecurityKeyId)))

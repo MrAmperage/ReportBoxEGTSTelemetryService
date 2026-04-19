@@ -34,8 +34,18 @@ type EGTSPackgeHeader struct {
 
 /*Декодер заголовка*/
 func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Reader *bytes.Reader) (Error error) {
-
+	ProtocolVersion, Error := EGTSPackgeHeader.DecodeProtocolVersion(Reader)
+	if Error != nil {
+		return Error
+	}
+	EGTSPackgeHeader.ProtocolVersion = ProtocolVersion
 	return Error
+}
+
+/*Декодирование версии протокола*/
+func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeProtocolVersion(Reader *bytes.Reader) (ProtocolVersion uint8, Error error) {
+	ProtocolVersion, Error = ReadByte(Reader)
+	return ProtocolVersion, Error
 }
 
 /*Текстовое представление типа пакета*/
