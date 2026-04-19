@@ -105,6 +105,12 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Reader *bytes.Reader) (Error er
 		EGTSPackgeHeader.TimeToLive = TimeToLive
 	}
 
+	HeaderCheckSum, Error := EGTSPackgeHeader.DecodeHeaderCheckSum(Reader)
+	if Error != nil {
+		return Error
+	}
+	EGTSPackgeHeader.HeaderCheckSum = HeaderCheckSum
+
 	return Error
 }
 func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeTimeToLive(Reader *bytes.Reader) (TimeToLive uint8, Error error) {
@@ -112,6 +118,10 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeTimeToLive(Reader *bytes.Reader)
 	return TimeToLive, Error
 }
 
+func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeHeaderCheckSum(Reader *bytes.Reader) (HeaderCheckSum uint8, Error error) {
+	HeaderCheckSum, Error = ReadByte(Reader)
+	return HeaderCheckSum, Error
+}
 func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeRecipientAddress(Reader *bytes.Reader) (RecipientAddress uint16, Error error) {
 	RecipientAddress, Error = ReadUshort(Reader)
 	return RecipientAddress, Error
