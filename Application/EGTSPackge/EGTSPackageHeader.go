@@ -72,6 +72,12 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Reader *bytes.Reader) (Error er
 		return Error
 	}
 	EGTSPackgeHeader.FrameDataLength = FrameDataLength
+
+	PacketIdentifier, Error := EGTSPackgeHeader.DecodePacketIdentifier(Reader)
+	if Error != nil {
+		return Error
+	}
+	EGTSPackgeHeader.PacketIdentifier = PacketIdentifier
 	return Error
 }
 
@@ -90,6 +96,11 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeProtocolVersion(Reader *bytes.Re
 	ProtocolVersion, Error = ReadByte(Reader)
 	return ProtocolVersion, Error
 }
+func (EGTSPackgeHeader *EGTSPackgeHeader) DecodePacketIdentifier(Reader *bytes.Reader) (PacketIdentifier uint16, Error error) {
+	PacketIdentifier, Error = ReadUshort(Reader)
+	return PacketIdentifier, Error
+}
+
 func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeSecurityKeyId(Reader *bytes.Reader) (SecurityKeyId uint8, Error error) {
 	SecurityKeyId, Error = ReadByte(Reader)
 	return SecurityKeyId, Error
