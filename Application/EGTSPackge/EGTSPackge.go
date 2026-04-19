@@ -24,6 +24,7 @@ func (EGTSPackge *EGTSPackge) Decode(ByteMessage []byte) (Error error) {
 
 /*Считать одно сообщение*/
 func (EGTSPackge *EGTSPackge) ReadMessage(Connection net.Conn) (Buffer []byte, Error error) {
+
 	MinimalHeader := make([]byte, 11)
 	_, Error = io.ReadFull(Connection, MinimalHeader)
 	if Error != nil {
