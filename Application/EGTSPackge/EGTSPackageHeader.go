@@ -39,6 +39,21 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Reader *bytes.Reader) (Error er
 		return Error
 	}
 	EGTSPackgeHeader.ProtocolVersion = ProtocolVersion
+	SecurityKeyId, Error := EGTSPackgeHeader.DecodeSecurityKeyId(Reader)
+	if Error != nil {
+		return Error
+	}
+	EGTSPackgeHeader.SecurityKeyId = SecurityKeyId
+
+	Prefix, Route, EncryptionAlgorithm, Compression, Priority, Error := EGTSPackgeHeader.Flags.DecodeFlags(Reader)
+	if Error != nil {
+		return Error
+	}
+	EGTSPackgeHeader.Flags.Prefix = Prefix
+	EGTSPackgeHeader.Flags.Route = Route
+	EGTSPackgeHeader.Flags.EncryptionAlgorithm = EncryptionAlgorithm
+	EGTSPackgeHeader.Flags.Compression = Compression
+	EGTSPackgeHeader.Flags.Priority = Priority
 	return Error
 }
 
@@ -46,6 +61,11 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Reader *bytes.Reader) (Error er
 func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeProtocolVersion(Reader *bytes.Reader) (ProtocolVersion uint8, Error error) {
 	ProtocolVersion, Error = ReadByte(Reader)
 	return ProtocolVersion, Error
+}
+func (EGTSPackgeHeader *EGTSPackgeHeader) DecodeSecurityKeyId(Reader *bytes.Reader) (SecurityKeyId uint8, Error error) {
+	SecurityKeyId, Error = ReadByte(Reader)
+	return SecurityKeyId, Error
+
 }
 
 /*Текстовое представление типа пакета*/
