@@ -36,3 +36,13 @@ func ReadUshort(Reader *bytes.Reader) (Number uint16, Error error) {
 	Number = binary.LittleEndian.Uint16(Bytes)
 	return Number, Error
 }
+
+/*Считать из ридера тип данных Uint*/
+func ReadUint(Reader *bytes.Reader) (Number uint32, Error error) {
+	Bytes, Error := ReadSequenceBytes(Reader, 4)
+	if Error != nil {
+		return Number, Error
+	}
+	Number = binary.LittleEndian.Uint32(Bytes)
+	return Number, Error
+}
