@@ -9,18 +9,22 @@ import (
 
 /*Структура для ЕГТС пакета*/
 type EGTSPackge struct {
-	Header EGTSPackgeHeader /*Заголовок пакета*/
+	Header  EGTSPackgeHeader /*Заголовок пакета*/
+	Records []Record         /*Записи с данными*/
+
 }
 
 /*Декодер пакета*/
-func (EGTSPackge *EGTSPackge) Decode(ByteMessage []byte) (Error error) {
-	Reader := bytes.NewReader(ByteMessage)
+func (EGTSPackge *EGTSPackge) Decode(Reader *bytes.Reader) (Error error) {
+
 	Error = EGTSPackge.Header.Decode(Reader)
 	if Error != nil {
 		return Error
 	}
+	DecodeRecords(Reader)
 	return Error
 }
+func DecodeRecords(Reader *bytes.Reader) {}
 
 /*Считать одно сообщение*/
 func (EGTSPackge *EGTSPackge) ReadMessage(Connection net.Conn) (Buffer []byte, Error error) {

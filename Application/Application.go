@@ -2,6 +2,7 @@ package Application
 
 import (
 	"ReportBoxEGTSTelemetryService/Application/EGTSPackge"
+	"bytes"
 	"fmt"
 	"log"
 	"net"
@@ -62,8 +63,8 @@ func (Service *Service) HandlerConnection(Connection net.Conn) {
 		Package := &EGTSPackge.EGTSPackge{}
 		ByteMessage, Error := Package.ReadMessage(Connection)
 		File.Write([]byte(fmt.Sprintf("% x\n", ByteMessage)))
-
-		Error = Package.Decode(ByteMessage)
+		Reader := bytes.NewReader(ByteMessage)
+		Error = Package.Decode(Reader)
 		if Error != nil {
 			File.Write([]byte(fmt.Sprintf("Ошибка: %s\n", Error)))
 			return
