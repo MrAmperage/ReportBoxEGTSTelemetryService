@@ -2,6 +2,7 @@ package Application
 
 import (
 	"ReportBoxEGTSTelemetryService/Application/EGTSPackge"
+	"bytes"
 	"fmt"
 	"log"
 	"net"
@@ -56,17 +57,39 @@ func (Service *Service) HandlerConnection(Connection net.Conn) {
 		return
 	}
 	defer File.Close()
-	Buffer := make([]byte, 2048)
+
 	for {
-		ByteCount, Error := Connection.Read(Buffer)
-		if Error != nil {
-			fmt.Println("Client disconnected:", Error)
-			return
-		}
-		Data := Buffer[:ByteCount]
+
 		Package := &EGTSPackge.EGTSPackge{}
-		Package.Decode(Data)
-		File.Write([]byte(fmt.Sprintf("% x\n", Data)))
+		ByteMessage, Error := Package.ReadMessage(Connection)
+		File.Write([]byte(fmt.Sprintf("% x\n", ByteMessage)))
+		Reader := bytes.NewReader(ByteMessage)
+		Error = Package.Decode(Reader)
+		if Error != nil {
+			File.Write([]byte(fmt.Sprintf("Ошибка: %s\n", Error)))
+			return
+		} else {
+			File.Write([]byte(fmt.Sprintf("Protocol Version: %d\n", Package.Header.ProtocolVersion)))
+			File.Write([]byte(fmt.Sprintf("Security Key Id: %d\n", Package.Header.SecurityKeyId)))
+			File.Write([]byte(fmt.Sprintf("Prefix Flag: %d\n", Package.Header.Flags.Prefix)))
+			File.Write([]byte(fmt.Sprintf("Route Flag: %t\n", Package.Header.Flags.Route)))
+			File.Write([]byte(fmt.Sprintf("Encryption Algorithm Flag: %d\n", Package.Header.Flags.EncryptionAlgorithm)))
+			File.Write([]byte(fmt.Sprintf("Compression Flag: %t\n", Package.Header.Flags.Compression)))
+			File.Write([]byte(fmt.Sprintf("Priority Flag: %d\n", Package.Header.Flags.Priority)))
+			File.Write([]byte(fmt.Sprintf("Header Length: %d\n", Package.Header.HeaderLength)))
+			File.Write([]byte(fmt.Sprintf("Header Encoding: %d\n", Package.Header.HeaderEncoding)))
+			File.Write([]byte(fmt.Sprintf("Frame Data Length: %d\n", Package.Header.FrameDataLength)))
+			File.Write([]byte(fmt.Sprintf("Packet Identifier: %d\n", Package.Header.PacketIdentifier)))
+			File.Write([]byte(fmt.Sprintf("Packet Type: %s\n", Package.Header.PacketTypeToString(Package.Header.PacketType))))
+			if Package.Header.Flags.Route {
+				File.Write([]byte(fmt.Sprintf("Peer Address: %d\n", Package.Header.PeerAddress)))
+				File.Write([]byte(fmt.Sprintf("Recipient Address: %d\n", Package.Header.RecipientAddress)))
+				File.Write([]byte(fmt.Sprintf("Time To Live: %d\n", Package.Header.TimeToLive)))
+
+			}
+			File.Write([]byte(fmt.Sprintf("Header Check Sum: %d\n", Package.Header.HeaderCheckSum)))
+		}
+
 		Connection.Write([]byte("OK\n"))
 	}
 }
