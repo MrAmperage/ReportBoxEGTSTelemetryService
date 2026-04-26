@@ -21,10 +21,22 @@ func (EGTSPackge *EGTSPackge) Decode(Reader *bytes.Reader) (Error error) {
 	if Error != nil {
 		return Error
 	}
-	DecodeRecords(Reader)
+	Record, Error := DecodeRecord(Reader)
+	if Error != nil {
+		return Error
+	}
+	EGTSPackge.Records = append(EGTSPackge.Records, Record)
 	return Error
 }
-func DecodeRecords(Reader *bytes.Reader) {}
+func DecodeRecord(Reader *bytes.Reader) (Record Record, Error error) {
+
+	Error = Record.RecordHeader.DecodeRecordHeader(Reader)
+	if Error != nil {
+		return Record, Error
+	}
+
+	return Record, Error
+}
 
 /*Считать одно сообщение*/
 func (EGTSPackge *EGTSPackge) ReadMessage(Connection net.Conn) (Buffer []byte, Error error) {

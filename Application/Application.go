@@ -88,6 +88,11 @@ func (Service *Service) HandlerConnection(Connection net.Conn) {
 
 			}
 			File.Write([]byte(fmt.Sprintf("Header Check Sum: %d\n", Package.Header.HeaderCheckSum)))
+			for Index, Record := range Package.Records {
+				File.Write([]byte(fmt.Sprintf("Порядковый номер записи: %d\n", Index)))
+				File.Write([]byte(fmt.Sprintf("Record Length: %d\n", Record.RecordHeader.RecordLength)))
+
+			}
 		}
 
 		Connection.Write([]byte("OK\n"))
