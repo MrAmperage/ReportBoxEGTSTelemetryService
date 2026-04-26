@@ -20,15 +20,21 @@ func (RecordHeader *RecordHeader) DecodeRecordHeader(Reader *bytes.Reader) (Erro
 		return Error
 	}
 	RecordHeader.RecordLength = RecordLength
+
+	RecordNumber, Error := DecodeRecordNumber(Reader)
+	if Error != nil {
+		return Error
+	}
+	RecordHeader.RecordNumber = RecordNumber
 	return Error
 }
 
 /*Декодировать длину записи*/
 func DecodeRecordLength(Reader *bytes.Reader) (RecordLength uint16, Error error) {
+	return ReadUshort(Reader)
+}
 
-	RecordLength, Error = ReadUshort(Reader)
-	if Error != nil {
-		return RecordLength, Error
-	}
-	return RecordLength, Error
+/*Декодировать номер записи*/
+func DecodeRecordNumber(Reader *bytes.Reader) (RecordNumber uint16, Error error) {
+	return ReadUshort(Reader)
 }
