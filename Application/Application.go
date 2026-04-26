@@ -108,6 +108,7 @@ func (Service *Service) HandlerConnection(Connection net.Conn) {
 					File.Write([]byte(fmt.Sprintf("Time: %d\n", Record.RecordHeader.Time)))
 				}
 				File.Write([]byte(fmt.Sprintf("Source Service Type: %s\n", Record.RecordHeader.RecordTypeToString(Record.RecordHeader.SourceServiceType))))
+				File.Write([]byte(fmt.Sprintf("Recipient Service Type: %s\n", Record.RecordHeader.RecordTypeToString(Record.RecordHeader.RecipientServiceType))))
 
 			}
 		}

@@ -66,6 +66,12 @@ func (RecordHeader *RecordHeader) DecodeRecordHeader(Reader *bytes.Reader) (Erro
 		return Error
 	}
 	RecordHeader.SourceServiceType = SourceServiceType
+
+	RecipientServiceType, Error := DecodeRecipientServiceType(Reader)
+	if Error != nil {
+		return Error
+	}
+	RecordHeader.RecipientServiceType = RecipientServiceType
 	return Error
 }
 
@@ -98,6 +104,13 @@ func DecodeTime(Reader *bytes.Reader) (Time uint32, Error error) {
 func DecodeSourceServiceType(Reader *bytes.Reader) (SourceServiceType uint8, Error error) {
 	return ReadByte(Reader)
 }
+
+/*Декодировать RecipientServiceType*/
+func DecodeRecipientServiceType(Reader *bytes.Reader) (RecipientServiceType uint8, Error error) {
+	return ReadByte(Reader)
+}
+
+/*Текстовое представление типа записи*/
 func (RecordHeader *RecordHeader) RecordTypeToString(RecordType uint8) string {
 	switch RecordType {
 	case 1:
