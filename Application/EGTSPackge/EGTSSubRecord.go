@@ -17,6 +17,12 @@ func DecodeSubRecord(Reader *bytes.Reader) (SubRecord SubRecord, Error error) {
 		return SubRecord, Error
 	}
 	SubRecord.SubRecordType = SubRecordType
+
+	SubRecordLength, Error := DecodeSubRecordLength(Reader)
+	if Error != nil {
+		return SubRecord, Error
+	}
+	SubRecord.SubRecordLength = SubRecordLength
 	return SubRecord, Error
 }
 
@@ -34,4 +40,9 @@ func (RecordHeader *RecordHeader) SubRecordTypeToString(SubRecordType uint8) str
 		return "Unknown"
 	}
 
+}
+
+/*Декодировать SubRecordLength*/
+func DecodeSubRecordLength(Reader *bytes.Reader) (SubRecordLength uint16, Error error) {
+	return ReadUshort(Reader)
 }
