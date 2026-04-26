@@ -34,7 +34,11 @@ func DecodeRecord(Reader *bytes.Reader) (Record Record, Error error) {
 	if Error != nil {
 		return Record, Error
 	}
-
+	SubRecord, Error := DecodeSubRecord(Reader)
+	if Error != nil {
+		return Record, Error
+	}
+	Record.SubRecords = append(Record.SubRecords, SubRecord)
 	return Record, Error
 }
 
