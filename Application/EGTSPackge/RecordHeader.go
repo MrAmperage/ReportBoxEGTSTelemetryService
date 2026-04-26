@@ -46,6 +46,13 @@ func (RecordHeader *RecordHeader) DecodeRecordHeader(Reader *bytes.Reader) (Erro
 		}
 		RecordHeader.ObjectIdentifier = ObjectIdentifier
 	}
+	if RecordHeader.RecordFlags.EventIdFieldExist {
+		EventIdentifier, Error := DecodeEventIdentifier(Reader)
+		if Error != nil {
+			return Error
+		}
+		RecordHeader.EventIdentifier = EventIdentifier
+	}
 	return Error
 }
 
@@ -61,5 +68,10 @@ func DecodeRecordNumber(Reader *bytes.Reader) (RecordNumber uint16, Error error)
 
 /*Декодировать Id объекта*/
 func DecodeObjectIdentifier(Reader *bytes.Reader) (ObjectIdentifier uint32, Error error) {
+	return ReadUint(Reader)
+}
+
+/*Декодировать EventId*/
+func DecodeEventIdentifier(Reader *bytes.Reader) (EventIdentifier uint32, Error error) {
 	return ReadUint(Reader)
 }
