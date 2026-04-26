@@ -6,7 +6,7 @@ import "bytes"
 type RecordHeader struct {
 	RecordLength         uint16
 	RecordNumber         uint16
-	RecordFlags          uint8
+	RecordFlags          EGTSRecordHeaderFlags
 	ObjectIdentifier     uint32
 	EventIdentifier      uint32
 	Time                 uint32
@@ -26,6 +26,19 @@ func (RecordHeader *RecordHeader) DecodeRecordHeader(Reader *bytes.Reader) (Erro
 		return Error
 	}
 	RecordHeader.RecordNumber = RecordNumber
+
+	SourceServiceOnDevice, RecipientServiceOnDevice, Group, RecordProcessingPriority, TimeFieldExist, EventIdFieldExist, ObjectIdFieldExist, Error := RecordHeader.RecordFlags.DecodeFlags(Reader)
+	if Error != nil {
+		return Error
+	}
+	RecordHeader.RecordFlags.SourceServiceOnDevice = SourceServiceOnDevice
+	RecordHeader.RecordFlags.RecipientServiceOnDevice = RecipientServiceOnDevice
+	RecordHeader.RecordFlags.Group = Group
+	RecordHeader.RecordFlags.RecordProcessingPriority = RecordProcessingPriority
+	RecordHeader.RecordFlags.TimeFieldExist = TimeFieldExist
+	RecordHeader.RecordFlags.EventIdFieldExist = EventIdFieldExist
+	RecordHeader.RecordFlags.ObjectIdFieldExist = ObjectIdFieldExist
+
 	return Error
 }
 

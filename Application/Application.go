@@ -91,6 +91,13 @@ func (Service *Service) HandlerConnection(Connection net.Conn) {
 			for _, Record := range Package.Records {
 				File.Write([]byte(fmt.Sprintf("Record Length: %d\n", Record.RecordHeader.RecordLength)))
 				File.Write([]byte(fmt.Sprintf("Record Number: %d\n", Record.RecordHeader.RecordNumber)))
+				File.Write([]byte(fmt.Sprintf("Source Service On Device: %t\n", Record.RecordHeader.RecordFlags.SourceServiceOnDevice)))
+				File.Write([]byte(fmt.Sprintf("Recipient Service On Device: %t\n", Record.RecordHeader.RecordFlags.RecipientServiceOnDevice)))
+				File.Write([]byte(fmt.Sprintf("Group: %t\n", Record.RecordHeader.RecordFlags.Group)))
+				File.Write([]byte(fmt.Sprintf("Record Processing Priority: %d\n", Record.RecordHeader.RecordFlags.RecordProcessingPriority)))
+				File.Write([]byte(fmt.Sprintf("Time Field Exist: %t\n", Record.RecordHeader.RecordFlags.TimeFieldExist)))
+				File.Write([]byte(fmt.Sprintf("Event Id Field Exist: %t\n", Record.RecordHeader.RecordFlags.EventIdFieldExist)))
+				File.Write([]byte(fmt.Sprintf("Object Id Field Exist: %t\n", Record.RecordHeader.RecordFlags.ObjectIdFieldExist)))
 
 			}
 		}
