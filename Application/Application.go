@@ -98,6 +98,9 @@ func (Service *Service) HandlerConnection(Connection net.Conn) {
 				File.Write([]byte(fmt.Sprintf("Time Field Exist: %t\n", Record.RecordHeader.RecordFlags.TimeFieldExist)))
 				File.Write([]byte(fmt.Sprintf("Event Id Field Exist: %t\n", Record.RecordHeader.RecordFlags.EventIdFieldExist)))
 				File.Write([]byte(fmt.Sprintf("Object Id Field Exist: %t\n", Record.RecordHeader.RecordFlags.ObjectIdFieldExist)))
+				if Record.RecordHeader.RecordFlags.ObjectIdFieldExist {
+					File.Write([]byte(fmt.Sprintf("Object Identifier: %d\n", Record.RecordHeader.ObjectIdentifier)))
+				}
 
 			}
 		}
