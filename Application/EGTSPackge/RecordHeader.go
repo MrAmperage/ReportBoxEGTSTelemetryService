@@ -53,6 +53,14 @@ func (RecordHeader *RecordHeader) DecodeRecordHeader(Reader *bytes.Reader) (Erro
 		}
 		RecordHeader.EventIdentifier = EventIdentifier
 	}
+
+	if RecordHeader.RecordFlags.TimeFieldExist {
+		Time, Error := DecodeTime(Reader)
+		if Error != nil {
+			return Error
+		}
+		RecordHeader.Time = Time
+	}
 	return Error
 }
 
@@ -73,5 +81,10 @@ func DecodeObjectIdentifier(Reader *bytes.Reader) (ObjectIdentifier uint32, Erro
 
 /*Декодировать EventId*/
 func DecodeEventIdentifier(Reader *bytes.Reader) (EventIdentifier uint32, Error error) {
+	return ReadUint(Reader)
+}
+
+/*Декодировать Time*/
+func DecodeTime(Reader *bytes.Reader) (Time uint32, Error error) {
 	return ReadUint(Reader)
 }

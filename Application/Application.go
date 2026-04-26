@@ -104,6 +104,9 @@ func (Service *Service) HandlerConnection(Connection net.Conn) {
 				if Record.RecordHeader.RecordFlags.EventIdFieldExist {
 					File.Write([]byte(fmt.Sprintf("Event Identifier: %d\n", Record.RecordHeader.EventIdentifier)))
 				}
+				if Record.RecordHeader.RecordFlags.TimeFieldExist {
+					File.Write([]byte(fmt.Sprintf("Time: %d\n", Record.RecordHeader.Time)))
+				}
 
 			}
 		}
