@@ -107,6 +107,7 @@ func (Service *Service) HandlerConnection(Connection net.Conn) {
 				if Record.RecordHeader.RecordFlags.TimeFieldExist {
 					File.Write([]byte(fmt.Sprintf("Time: %d\n", Record.RecordHeader.Time)))
 				}
+				File.Write([]byte(fmt.Sprintf("Source Service Type: %s\n", Record.RecordHeader.RecordTypeToString(Record.RecordHeader.SourceServiceType))))
 
 			}
 		}

@@ -61,6 +61,11 @@ func (RecordHeader *RecordHeader) DecodeRecordHeader(Reader *bytes.Reader) (Erro
 		}
 		RecordHeader.Time = Time
 	}
+	SourceServiceType, Error := DecodeSourceServiceType(Reader)
+	if Error != nil {
+		return Error
+	}
+	RecordHeader.SourceServiceType = SourceServiceType
 	return Error
 }
 
@@ -87,4 +92,18 @@ func DecodeEventIdentifier(Reader *bytes.Reader) (EventIdentifier uint32, Error 
 /*Декодировать Time*/
 func DecodeTime(Reader *bytes.Reader) (Time uint32, Error error) {
 	return ReadUint(Reader)
+}
+
+/*Декодировать SourceServiceType*/
+func DecodeSourceServiceType(Reader *bytes.Reader) (SourceServiceType uint8, Error error) {
+	return ReadByte(Reader)
+}
+func (RecordHeader *RecordHeader) RecordTypeToString(RecordType uint8) string {
+	switch RecordType {
+	case 1:
+		return "EGTS_AUTH_SERVICE"
+	default:
+		return "Unknown"
+	}
+
 }
