@@ -1,4 +1,4 @@
-package EGTSPackge
+package Helpers
 
 import (
 	"bytes"

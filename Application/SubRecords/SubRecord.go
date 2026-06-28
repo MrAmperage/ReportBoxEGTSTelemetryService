@@ -1,6 +1,9 @@
-package EGTSPackge
+package SubRecords
 
-import "bytes"
+import (
+	"ReportBoxEGTSTelemetryService/Application/Helpers"
+	"bytes"
+)
 
 /*Подзапись*/
 type SubRecord struct {
@@ -28,11 +31,11 @@ func DecodeSubRecord(Reader *bytes.Reader) (SubRecord SubRecord, Error error) {
 
 /*Декодировать SubRecordType*/
 func DecodeSubRecordType(Reader *bytes.Reader) (SubRecordType uint8, Error error) {
-	return ReadByte(Reader)
+	return Helpers.ReadByte(Reader)
 }
 
 /*Текстовое представление типа подзаписи*/
-func (RecordHeader *RecordHeader) SubRecordTypeToString(SubRecordType uint8) string {
+func SubRecordTypeToString(SubRecordType uint8) string {
 	switch SubRecordType {
 	case 1:
 		return "EGTS_SR_TERM_IDENTITY"
@@ -44,5 +47,5 @@ func (RecordHeader *RecordHeader) SubRecordTypeToString(SubRecordType uint8) str
 
 /*Декодировать SubRecordLength*/
 func DecodeSubRecordLength(Reader *bytes.Reader) (SubRecordLength uint16, Error error) {
-	return ReadUshort(Reader)
+	return Helpers.ReadUshort(Reader)
 }

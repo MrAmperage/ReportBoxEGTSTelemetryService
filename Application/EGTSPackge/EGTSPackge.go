@@ -1,6 +1,7 @@
 package EGTSPackge
 
 import (
+	"ReportBoxEGTSTelemetryService/Application/SubRecords"
 	"bytes"
 	"encoding/binary"
 	"io"
@@ -34,7 +35,7 @@ func DecodeRecord(Reader *bytes.Reader) (Record Record, Error error) {
 	if Error != nil {
 		return Record, Error
 	}
-	SubRecord, Error := DecodeSubRecord(Reader)
+	SubRecord, Error := SubRecords.DecodeSubRecord(Reader)
 	if Error != nil {
 		return Record, Error
 	}

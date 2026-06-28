@@ -2,6 +2,7 @@ package Application
 
 import (
 	"ReportBoxEGTSTelemetryService/Application/EGTSPackge"
+	"ReportBoxEGTSTelemetryService/Application/SubRecords"
 	"bytes"
 	"fmt"
 	"log"
@@ -110,7 +111,7 @@ func (Service *Service) HandlerConnection(Connection net.Conn) {
 				File.Write([]byte(fmt.Sprintf("Source Service Type: %s\n", Record.RecordHeader.RecordTypeToString(Record.RecordHeader.SourceServiceType))))
 				File.Write([]byte(fmt.Sprintf("Recipient Service Type: %s\n", Record.RecordHeader.RecordTypeToString(Record.RecordHeader.RecipientServiceType))))
 				for _, SubRecord := range Record.SubRecords {
-					File.Write([]byte(fmt.Sprintf("SubRecord Type: %s\n", Record.RecordHeader.SubRecordTypeToString(SubRecord.SubRecordType))))
+					File.Write([]byte(fmt.Sprintf("SubRecord Type: %s\n", SubRecords.SubRecordTypeToString(SubRecord.SubRecordType))))
 					File.Write([]byte(fmt.Sprintf("SubRecord Length: %d\n", SubRecord.SubRecordLength)))
 
 				}

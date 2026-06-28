@@ -1,6 +1,7 @@
 package EGTSPackge
 
 import (
+	"ReportBoxEGTSTelemetryService/Application/Helpers"
 	"bytes"
 )
 
@@ -114,55 +115,55 @@ func (EGTSPackgeHeader *EGTSPackgeHeader) Decode(Reader *bytes.Reader) (Error er
 	return Error
 }
 func DecodeTimeToLive(Reader *bytes.Reader) (TimeToLive uint8, Error error) {
-	TimeToLive, Error = ReadByte(Reader)
+	TimeToLive, Error = Helpers.ReadByte(Reader)
 	return TimeToLive, Error
 }
 
 func DecodeHeaderCheckSum(Reader *bytes.Reader) (HeaderCheckSum uint8, Error error) {
-	HeaderCheckSum, Error = ReadByte(Reader)
+	HeaderCheckSum, Error = Helpers.ReadByte(Reader)
 	return HeaderCheckSum, Error
 }
 func DecodeRecipientAddress(Reader *bytes.Reader) (RecipientAddress uint16, Error error) {
-	RecipientAddress, Error = ReadUshort(Reader)
+	RecipientAddress, Error = Helpers.ReadUshort(Reader)
 	return RecipientAddress, Error
 }
 func DecodeHeaderEncoding(Reader *bytes.Reader) (HeaderEncoding uint8, Error error) {
-	HeaderEncoding, Error = ReadByte(Reader)
+	HeaderEncoding, Error = Helpers.ReadByte(Reader)
 	return HeaderEncoding, Error
 
 }
 func DecodeFrameDataLength(Reader *bytes.Reader) (FrameDataLength uint16, Error error) {
-	FrameDataLength, Error = ReadUshort(Reader)
+	FrameDataLength, Error = Helpers.ReadUshort(Reader)
 	return FrameDataLength, Error
 }
 func DecodePacketType(Reader *bytes.Reader) (PacketType uint8, Error error) {
-	PacketType, Error = ReadByte(Reader)
+	PacketType, Error = Helpers.ReadByte(Reader)
 	return PacketType, Error
 }
 
 /*Декодирование версии протокола*/
 func DecodeProtocolVersion(Reader *bytes.Reader) (ProtocolVersion uint8, Error error) {
-	ProtocolVersion, Error = ReadByte(Reader)
+	ProtocolVersion, Error = Helpers.ReadByte(Reader)
 	return ProtocolVersion, Error
 }
 func DecodePacketIdentifier(Reader *bytes.Reader) (PacketIdentifier uint16, Error error) {
-	PacketIdentifier, Error = ReadUshort(Reader)
+	PacketIdentifier, Error = Helpers.ReadUshort(Reader)
 	return PacketIdentifier, Error
 }
 
 func DecodeSecurityKeyId(Reader *bytes.Reader) (SecurityKeyId uint8, Error error) {
-	SecurityKeyId, Error = ReadByte(Reader)
+	SecurityKeyId, Error = Helpers.ReadByte(Reader)
 	return SecurityKeyId, Error
 
 }
 
 func DecodeHeaderLength(Reader *bytes.Reader) (HeaderLength uint8, Error error) {
-	HeaderLength, Error = ReadByte(Reader)
+	HeaderLength, Error = Helpers.ReadByte(Reader)
 	return HeaderLength, Error
 }
 
 func DecodePeerAddress(Reader *bytes.Reader) (PeerAddress uint16, Error error) {
-	PeerAddress, Error = ReadUshort(Reader)
+	PeerAddress, Error = Helpers.ReadUshort(Reader)
 	return PeerAddress, Error
 
 }

@@ -1,6 +1,9 @@
 package EGTSPackge
 
-import "bytes"
+import (
+	"ReportBoxEGTSTelemetryService/Application/Helpers"
+	"bytes"
+)
 
 /*Флаги для еденичной записи*/
 type EGTSRecordHeaderFlags struct {
@@ -23,7 +26,7 @@ func (EGTSRecordHeaderFlags *EGTSRecordHeaderFlags) DecodeFlags(Reader *bytes.Re
 	ObjectIdFieldExist bool,
 	Error error,
 ) {
-	ByteFlags, Error := ReadByte(Reader)
+	ByteFlags, Error := Helpers.ReadByte(Reader)
 	if Error != nil {
 		return SourceServiceOnDevice,
 			RecipientServiceOnDevice,

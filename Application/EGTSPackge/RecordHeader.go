@@ -1,6 +1,9 @@
 package EGTSPackge
 
-import "bytes"
+import (
+	"ReportBoxEGTSTelemetryService/Application/Helpers"
+	"bytes"
+)
 
 /*Заголовок записи*/
 type RecordHeader struct {
@@ -77,37 +80,37 @@ func (RecordHeader *RecordHeader) DecodeRecordHeader(Reader *bytes.Reader) (Erro
 
 /*Декодировать длину записи*/
 func DecodeRecordLength(Reader *bytes.Reader) (RecordLength uint16, Error error) {
-	return ReadUshort(Reader)
+	return Helpers.ReadUshort(Reader)
 }
 
 /*Декодировать номер записи*/
 func DecodeRecordNumber(Reader *bytes.Reader) (RecordNumber uint16, Error error) {
-	return ReadUshort(Reader)
+	return Helpers.ReadUshort(Reader)
 }
 
 /*Декодировать Id объекта*/
 func DecodeObjectIdentifier(Reader *bytes.Reader) (ObjectIdentifier uint32, Error error) {
-	return ReadUint(Reader)
+	return Helpers.ReadUint(Reader)
 }
 
 /*Декодировать EventId*/
 func DecodeEventIdentifier(Reader *bytes.Reader) (EventIdentifier uint32, Error error) {
-	return ReadUint(Reader)
+	return Helpers.ReadUint(Reader)
 }
 
 /*Декодировать Time*/
 func DecodeTime(Reader *bytes.Reader) (Time uint32, Error error) {
-	return ReadUint(Reader)
+	return Helpers.ReadUint(Reader)
 }
 
 /*Декодировать SourceServiceType*/
 func DecodeSourceServiceType(Reader *bytes.Reader) (SourceServiceType uint8, Error error) {
-	return ReadByte(Reader)
+	return Helpers.ReadByte(Reader)
 }
 
 /*Декодировать RecipientServiceType*/
 func DecodeRecipientServiceType(Reader *bytes.Reader) (RecipientServiceType uint8, Error error) {
-	return ReadByte(Reader)
+	return Helpers.ReadByte(Reader)
 }
 
 /*Текстовое представление типа записи*/
