@@ -1,6 +1,6 @@
-package SubRecords
+package EGTS_SR_TERM_IDENTITY
 
-/*Флаги для */
+/*Флаги для EGTS_SR_TERM_IDENTITY*/
 type EGTS_SR_TERM_IDENTITYFlags struct {
 	MobileNetworkExists                         bool
 	BufferSizeExists                            bool

@@ -2,17 +2,21 @@ package SubRecord
 
 import (
 	"ReportBoxEGTSTelemetryService/Application/Helpers"
+	"ReportBoxEGTSTelemetryService/Application/SubRecord/EGTS_SR_TERM_IDENTITY"
 	"bytes"
 )
 
+type SubRecordType = EGTS_SR_TERM_IDENTITY.EGTS_SR_TERM_IDENTITY
+
 /*Подзапись*/
-type SubRecord struct {
+type SubRecord[SybRecordData SubRecordType] struct {
 	SubRecordType   uint8
 	SubRecordLength uint16
+	Data            SybRecordData
 }
 
 /*Декодирование подзаписи*/
-func DecodeSubRecord(Reader *bytes.Reader) (SubRecord SubRecord, Error error) {
+func DecodeSubRecord(Reader *bytes.Reader) (SubRecord SubRecord[SubRecordType], Error error) {
 
 	SubRecordType, Error := DecodeSubRecordType(Reader)
 

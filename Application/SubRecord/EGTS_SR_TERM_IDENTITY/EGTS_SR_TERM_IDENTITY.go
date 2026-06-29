@@ -1,4 +1,4 @@
-package SubRecords
+package EGTS_SR_TERM_IDENTITY
 
 /*Подзапись для идентификации терминала*/
 type EGTS_SR_TERM_IDENTITY struct {

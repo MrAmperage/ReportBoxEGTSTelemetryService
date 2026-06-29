@@ -5,5 +5,5 @@ import "ReportBoxEGTSTelemetryService/Application/SubRecord"
 /*Запись*/
 type Record struct {
 	RecordHeader RecordHeader
-	SubRecords   []SubRecord.SubRecord
+	SubRecords   []SubRecord.SubRecord[SubRecord.SubRecordType]
 }
