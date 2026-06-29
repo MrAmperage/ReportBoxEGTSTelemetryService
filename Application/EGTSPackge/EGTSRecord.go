@@ -1,9 +1,9 @@
 package EGTSPackge
 
-import "ReportBoxEGTSTelemetryService/Application/SubRecords"
+import "ReportBoxEGTSTelemetryService/Application/SubRecord"
 
 /*Запись*/
 type Record struct {
 	RecordHeader RecordHeader
-	SubRecords   []SubRecords.SubRecord
+	SubRecords   []SubRecord.SubRecord
 }

@@ -1,4 +1,4 @@
-package SubRecords
+package SubRecord
 
 import (
 	"ReportBoxEGTSTelemetryService/Application/Helpers"

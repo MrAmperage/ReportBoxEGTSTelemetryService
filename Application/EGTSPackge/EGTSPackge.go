@@ -1,7 +1,7 @@
 package EGTSPackge
 
 import (
-	"ReportBoxEGTSTelemetryService/Application/SubRecords"
+	SubRecords "ReportBoxEGTSTelemetryService/Application/SubRecord"
 	"bytes"
 	"encoding/binary"
 	"io"
